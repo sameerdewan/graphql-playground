@@ -97,6 +97,24 @@ const RootMutation = new GraphQLObjectType({
                 const { data } = await axios.delete(`${baseURL}/users/${args.id}`);
                 return data;
             }
+        },
+        updateUser: {
+            type: UserType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) },
+                firstName: { type: GraphQLString },
+                age: { type: GraphQLInt },
+                company: { type: GraphQLString }
+            },
+            async resolve(_, args) {
+                const { data: storedData } = await axios.get(`${baseURL}/users/${args.id}`);
+                const newData = JSON.parse(JSON.stringify({...storedData}));
+                newData.firstName = args.firstName || storedData.firstName;
+                newData.age = args.age || storedData.age;
+                newData.company = args.company || storedData.company;
+                const { data: updatedData } = await axios.put(`${baseURL}/users/${args.id}`, newData);
+                return updatedData;
+            }
         }
     }
 });
