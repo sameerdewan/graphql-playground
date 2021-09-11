@@ -6,7 +6,8 @@ const {
     GraphQLString,
     GraphQLInt,
     GraphQLSchema,
-    GraphQLList
+    GraphQLList,
+    GraphQLNonNull
 } = graphql;
 
 // const mockDB = require('../mockDB');
@@ -68,4 +69,29 @@ const RootQuery = new GraphQLObjectType({
     })
 });
 
-module.exports = new GraphQLSchema({ query: RootQuery });
+const RootMutation = new GraphQLObjectType({
+    name: 'RootMutationType',
+    fields: {
+        addUser: {
+            type: UserType,
+            args: {
+                firstName: { type: new GraphQLNonNull(GraphQLString) },
+                age: { type: new GraphQLNonNull(GraphQLInt) },
+                companyId: { type: GraphQLString }
+            },
+            async resolve(parentValue, args) {
+                const payload = {
+                    firstName: args.firstName,
+                    age: args.age
+                };
+                const { data } = await axios.post(`${baseURL}/users`, payload);
+                return data;
+            }
+        }
+    }
+});
+
+module.exports = new GraphQLSchema({ 
+    query: RootQuery,
+    mutation: RootMutation
+});
