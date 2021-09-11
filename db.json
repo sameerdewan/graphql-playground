@@ -1,12 +1,6 @@
 {
   "users": [
     {
-      "id": "1",
-      "firstName": "Bill",
-      "age": 27,
-      "company": "4"
-    },
-    {
       "id": "2",
       "firstName": "Tommy",
       "age": 30,
